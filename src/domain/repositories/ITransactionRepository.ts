@@ -39,15 +39,6 @@ export interface ITransactionRepository {
     ): Promise<TransferValidation>;
 
     /**
-     * Process a transfer
-     */
-    processTransfer(
-        fromAccountId: string,
-        toIdentifier: string,
-        amount: number,
-    ): Promise<TransferResult>;
-
-    /**
      * Get account statistics
      */
     getAccountStatistics(

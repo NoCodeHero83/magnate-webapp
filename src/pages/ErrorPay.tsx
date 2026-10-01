@@ -7,6 +7,8 @@ interface ErrorState {
   amount: string;
   recipient: string;
   errorCode?: string;
+  /** Motivo legible (ej. saldo insuficiente) */
+  errorMessage?: string;
 }
 
 const ErrorPay = () => {
@@ -17,7 +19,8 @@ const ErrorPay = () => {
   const errorData = {
     amount: state?.amount || "0.00",
     recipient: state?.recipient || "Desconocido",
-    errorCode: state?.errorCode || "ERR-001"
+    errorCode: state?.errorCode || "ERR-001",
+    errorMessage: state?.errorMessage,
   };
 
   return (
@@ -43,7 +46,8 @@ const ErrorPay = () => {
           {/* Message Section */}
           <div className="p-6 text-center border-b border-border">
             <p className="text-foreground/80 leading-relaxed font-medium">
-              Ocurrió un inconveniente, no se proceso su solicitud. Por favor, inténtalo nuevamente en unos minutos.
+              {errorData.errorMessage ||
+                "Ocurrió un inconveniente, no se procesó su solicitud. Por favor, inténtalo nuevamente en unos minutos."}
             </p>
           </div>
 

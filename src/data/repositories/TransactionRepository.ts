@@ -19,16 +19,6 @@ export class TransactionRepository implements ITransactionRepository {
         return await this.transactionDataSource.validateTransfer(fromAccountId, toIdentifier, amount, paymentMethod);
     }
 
-    async processTransfer(
-        fromAccountId: string,
-        toIdentifier: string,
-        amount: number,
-        concept?: string,
-        paymentMethod?: string
-    ): Promise<TransferResult> {
-        return await this.transactionDataSource.processTransfer(fromAccountId, toIdentifier, amount, concept, paymentMethod);
-    }
-
     async getAccountStatistics(
         accountId: string,
         startDate: Date,

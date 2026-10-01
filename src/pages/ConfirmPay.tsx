@@ -4,7 +4,7 @@ import { ArrowLeft, Loader2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
 import { formatCurrencyAR, getInitials } from "@/lib/formatters";
-import { useOtpVerification } from "@/hooks/useOtpVerification";
+import { useOtpVerification, OtpVerifyResult } from "@/hooks/useOtpVerification";
 import { TransferState } from "@/types";
 import { useAuth } from "@/presentation/contexts/AuthContext";
 import { TransactionDataSource } from "@/data/datasources/supabase/TransactionDataSource";
@@ -17,117 +17,94 @@ const transactionDataSource = new TransactionDataSource();
 const ConfirmPay = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, account, session, refreshUser } = useAuth();
+  const { account, refreshUser } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSecurityModal, setShowSecurityModal] = useState(false);
-  const [generatedOtp, setGeneratedOtp] = useState<string>('');
 
   const transferData = location.state as TransferState | null;
 
-  const handleTransfer = async () => {
-    if (!account?.id || !transferData) return;
+  /** Pide al servidor el código para ESTA transferencia (cuenta, destino y monto) */
+  const requestCode = async (): Promise<string | void> => {
+    if (!account?.id || !transferData) return "No hay datos de la transferencia";
+    const result = await transactionDataSource.requestTransferCode(
+      account.id,
+      transferData.recipient,
+      transferData.amount
+    );
+    if (!result.success) return result.error || "No se pudo enviar el código";
+  };
 
-    setIsProcessing(true);
+  /** El servidor valida el código y, si es correcto, hace la transferencia */
+  const verifyAndTransfer = async (code: string): Promise<OtpVerifyResult> => {
+    if (!account?.id || !transferData) {
+      return { success: false, error: "No hay datos de la transferencia" };
+    }
+
+    // Mientras valida, el modal muestra su propio indicador
+    const outcome = await transactionDataSource.transferWithCode(
+      account.id,
+      transferData.recipient,
+      transferData.amount,
+      transferData.concept,
+      code
+    );
+
+    if (outcome.status === "invalid_code") {
+      return {
+        success: false,
+        error: outcome.attemptsLeft !== undefined && outcome.code === "INVALID_CODE"
+          ? `${outcome.error} Te quedan ${outcome.attemptsLeft} intento(s).`
+          : outcome.error,
+        attemptsLeft: outcome.attemptsLeft,
+        blocked: outcome.code === "TOO_MANY_ATTEMPTS" || outcome.code === "CODE_EXPIRED" || outcome.code === "CODE_MISMATCH",
+      };
+    }
+
     setShowSecurityModal(false);
 
-    try {
-      const result = await transactionDataSource.processTransfer(
-        account.id,
-        transferData.recipient,
-        transferData.amount,
-        transferData.concept
-      );
-
-      if (result.success) {
-        // Actualizar saldo
-        await refreshUser();
-
-        navigate("/success-pay", {
-          state: {
-            amount: result.amount,
-            recipient: {
-              name: transferData.recipientName || transferData.recipient,
-              cuit: transferData.recipient,
-              type: "CBU/Alias"
-            },
-            concept: transferData.concept,
-            transactionId: result.reference_number || result.transaction_id,
-            date: new Date(),
-          },
-        });
-      } else {
-        throw new Error("La transferencia no se pudo completar");
-      }
-    } catch (error: any) {
-      console.error("Error processing transfer:", error);
+    if (outcome.status === "transfer_failed") {
       navigate("/error-pay", {
         state: {
           amount: transferData.amount.toString(),
           recipient: transferData.recipient,
           errorCode: "ERR-TRX-FAIL",
+          errorMessage: outcome.error,
         },
       });
-    } finally {
-      setIsProcessing(false);
+      return { success: true };
     }
-  };
 
-  const invokeWorker = async () => {
-    try {
-      const workerResponse = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notification-worker`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      const workerResult = await workerResponse.json();
-    } catch (workerError) {
-      console.error('Error invocando worker:', workerError);
-    }
+    // Transferencia hecha: actualizar saldo
+    setIsProcessing(true);
+    await refreshUser();
+    const result = outcome.result;
+    navigate("/success-pay", {
+      state: {
+        amount: result.amount,
+        recipient: {
+          name: transferData.recipientName || transferData.recipient,
+          cuit: transferData.recipient,
+          type: "CBU/Alias"
+        },
+        concept: transferData.concept,
+        transactionId: result.reference_number || result.transaction_id,
+        date: new Date(),
+      },
+    });
+    return { success: true };
   };
 
   const otp = useOtpVerification({
-    maxAttempts: 3,
-    countdownSeconds: 120,
-    correctCode: generatedOtp || "123456", // ✅ Usar el OTP generado o 123456 para testing
-    onSuccess: handleTransfer,
-    onResend: async () => {
-      if (user && transferData) {
-        const result = await transactionDataSource.sendTransferOtp(
-          user.id,
-          transferData.amount,
-          transferData.recipientName || transferData.recipient
-        );
-        if (result.success && result.otp) {
-          setGeneratedOtp(result.otp); // ✅ Guardar el OTP generado
-
-          // ✅ Invocar worker después de encolar
-          await invokeWorker();
-        }
-      }
-    }
+    verifyCode: verifyAndTransfer,
+    onResend: requestCode,
   });
 
   const handleOpenSecurityModal = async () => {
+    otp.reset();
     setShowSecurityModal(true);
-    // ✅ Enviar código inicial cuando se abre el modal
-    if (user && transferData) {
-      const result = await transactionDataSource.sendTransferOtp(
-        user.id,
-        transferData.amount,
-        transferData.recipientName || transferData.recipient
-      );
-      if (result.success && result.otp) {
-        setGeneratedOtp(result.otp); // ✅ Guardar el OTP generado
-
-        // ✅ Invocar worker después de encolar
-        await invokeWorker();
-      }
-    }
+    // Enviar el código al abrir el modal
+    const error = await requestCode();
+    if (error) otp.setError(error);
   };
 
   // Si no hay datos de transferencia, redirigir

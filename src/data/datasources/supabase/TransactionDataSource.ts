@@ -23,6 +23,34 @@ export interface ProcessTransferResult {
     reference_number: string;
 }
 
+const OTP_ERRORS: Record<string, string> = {
+    INVALID_CODE: 'Código incorrecto.',
+    CODE_EXPIRED: 'El código expiró o ya fue usado. Pide uno nuevo.',
+    CODE_MISMATCH: 'El código no corresponde a esta transferencia. Pide uno nuevo.',
+    TOO_MANY_ATTEMPTS: 'Demasiados intentos fallidos. Pide un código nuevo.',
+    TOO_SOON: 'Espera un minuto antes de pedir otro código.',
+    TOO_MANY_REQUESTS: 'Pediste demasiados códigos. Intenta de nuevo más tarde.',
+    UNAUTHORIZED: 'No tienes permisos sobre esta cuenta.',
+    INVALID_TRANSFER: 'Los datos de la transferencia no son válidos.',
+};
+
+/** Mensajes legibles para los errores de la transferencia */
+const transferErrorMessage = (raw: string): string => {
+    if (raw.includes('INSUFFICIENT_BALANCE')) return 'Saldo insuficiente.';
+    if (raw.includes('MONTHLY_LIMIT_EXCEEDED')) return 'Excede el límite mensual de transferencias.';
+    if (raw.includes('DAILY_LIMIT_EXCEEDED')) return 'Excede el límite diario de transferencias.';
+    if (raw.includes('PER_TRANSACTION_LIMIT_EXCEEDED')) return 'Excede el límite por transacción.';
+    if (raw.includes('DESTINATION_NOT_ACTIVE')) return 'La cuenta destino no está habilitada para recibir transferencias.';
+    if (raw.includes('ACCOUNT_NOT_ACTIVE')) return 'Tu cuenta no está habilitada para operar en este momento.';
+    if (raw.includes('SAME_ACCOUNT')) return 'No puedes transferir a tu propia cuenta.';
+    return 'No se pudo completar la transferencia.';
+};
+
+export type TransferWithCodeResult =
+    | { status: 'ok'; result: ProcessTransferResult }
+    | { status: 'invalid_code'; code?: string; error: string; attemptsLeft?: number }
+    | { status: 'transfer_failed'; error: string };
+
 export class TransactionDataSource {
     /**
      * Get account movements (transactions)
@@ -125,29 +153,43 @@ export class TransactionDataSource {
     }
 
     /**
-     * Process a transfer
+     * Transferencia con el código enviado por email. El servidor valida que el
+     * código corresponda a esta cuenta, destino y monto antes de transferir.
      */
-    async processTransfer(
+    async transferWithCode(
         fromAccountId: string,
         toIdentifier: string,
         amount: number,
-        concept?: string,
+        concept: string | undefined,
+        code: string,
         paymentMethod: string = 'alias'
-    ): Promise<ProcessTransferResult> {
-        const { data, error } = await supabase
-            .rpc('process_transfer', {
-                p_from_account_id: fromAccountId,
-                p_to_identifier: toIdentifier,
-                p_amount: amount,
-                p_concept: concept,
-                p_payment_method: paymentMethod,
-            });
+    ): Promise<TransferWithCodeResult> {
+        const { data, error } = await supabase.rpc('transfer_with_code', {
+            p_from_account_id: fromAccountId,
+            p_to_identifier: toIdentifier,
+            p_amount: amount,
+            p_concept: concept ?? '',
+            p_payment_method: paymentMethod,
+            p_code: code,
+        });
 
+        // Error de la transferencia (saldo, límites, cuenta no habilitada...)
         if (error) {
-            throw new Error(`Error processing transfer: ${error.message}`);
+            return { status: 'transfer_failed', error: transferErrorMessage(error.message) };
         }
 
-        return data as ProcessTransferResult;
+        const result = data as any;
+        if (result?.success) {
+            return { status: 'ok', result: result as ProcessTransferResult };
+        }
+
+        // Error del código
+        return {
+            status: 'invalid_code',
+            code: result?.error,
+            error: OTP_ERRORS[result?.error] ?? 'No se pudo verificar el código.',
+            attemptsLeft: typeof result?.attempts_left === 'number' ? result.attempts_left : undefined,
+        };
     }
 
     /**
@@ -232,39 +274,26 @@ export class TransactionDataSource {
     }
 
     /**
-     * Send OTP for transfer verification via email
+     * Pide el código de una transferencia concreta. Lo genera y envía el servidor.
      */
-    async sendTransferOtp(
-        userId: string,
-        amount: number,
-        recipientName: string
-    ): Promise<{ success: boolean; otp?: string; error?: string }> {
-        try {
-            // Generar OTP de 6 dígitos
-            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    async requestTransferCode(
+        fromAccountId: string,
+        toIdentifier: string,
+        amount: number
+    ): Promise<{ success: boolean; error?: string }> {
+        const { data, error } = await supabase.rpc('request_transfer_code', {
+            p_from_account_id: fromAccountId,
+            p_to_identifier: toIdentifier,
+            p_amount: amount,
+        });
 
-            // ✅ Función correcta: enqueue_notification (sin __)
-            const { error } = await supabase.rpc('enqueue_notification', {
-                p_user_id: userId,
-                p_notification_type: 'transfer_otp',
-                p_data: {
-                    amount: amount,
-                    amount_formatted: `$ ${amount.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-                    recipient_name: recipientName,
-                    otp_code: otp,
-                },
-                p_related_transaction_id: null
-            });
-
-            if (error) {
-                console.error('Error encolando OTP:', error);
-                return { success: false, error: error.message };
-            }
-
-            return { success: true, otp };
-        } catch (error: any) {
-            console.error('Error enviando OTP:', error);
-            return { success: false, error: error.message };
+        if (error) {
+            console.error('Error pidiendo código de transferencia:', error);
+            return { success: false, error: 'No se pudo enviar el código. Revisa tu conexión.' };
         }
+
+        const result = data as any;
+        if (result?.success) return { success: true };
+        return { success: false, error: OTP_ERRORS[result?.error] ?? 'No se pudo enviar el código.' };
     }
 }
