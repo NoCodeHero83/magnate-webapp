@@ -70,9 +70,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 async (payload) => {
                     const newUser = payload.new as User;
                     if (newUser.verification_status === 'suspended' || newUser.verification_status === 'rejected') {
-
                         await logout();
-                        window.location.replace('/login?reason=suspended');
+                        window.location.replace(`/login?reason=${newUser.verification_status}`);
                     }
                 }
             )
@@ -244,10 +243,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             if (userData) {
                 // [V3.1] Check for suspension immediately after loading profile
-                if (userData.verification_status === 'suspended') {
-                    console.warn('🚫 [V3.1] User is suspended. Aborting load and logging out.');
+                if (userData.verification_status === 'suspended' || userData.verification_status === 'rejected') {
+                    console.warn(`🚫 [V3.1] User is ${userData.verification_status}. Aborting load and logging out.`);
                     await logout();
-                    window.location.replace('/login?reason=suspended');
+                    window.location.replace(`/login?reason=${userData.verification_status}`);
                     return;
                 }
 

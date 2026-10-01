@@ -46,11 +46,14 @@ const Login = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { login, isAuthenticated, loading: authLoading } = useAuth(); // Hook de autenticación real
-  const [showSuspendedAlert, setShowSuspendedAlert] = useState(false);
+  const [blockedReason, setBlockedReason] = useState<"suspended" | "rejected" | null>(null);
+  const showSuspendedAlert = blockedReason !== null;
+  const setShowSuspendedAlert = (open: boolean) => { if (!open) setBlockedReason(null); };
 
   useEffect(() => {
-    if (searchParams.get("reason") === "suspended") {
-      setShowSuspendedAlert(true);
+    const reason = searchParams.get("reason");
+    if (reason === "suspended" || reason === "rejected") {
+      setBlockedReason(reason);
     }
   }, [searchParams]);
 
@@ -226,9 +229,13 @@ const Login = () => {
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10 mb-4">
               <Ban className="h-6 w-6 text-destructive" />
             </div>
-            <AlertDialogTitle className="text-center text-xl">Cuenta Suspendida</AlertDialogTitle>
+            <AlertDialogTitle className="text-center text-xl">
+              {blockedReason === "rejected" ? "Cuenta Rechazada" : "Cuenta Suspendida"}
+            </AlertDialogTitle>
             <AlertDialogDescription className="text-center">
-              Tu cuenta ha sido suspendida temporalmente debido a actividad inusual o violación de nuestros términos.
+              {blockedReason === "rejected"
+                ? "No pudimos aprobar tu solicitud de cuenta. Te enviamos un email con el motivo."
+                : "Tu cuenta ha sido suspendida temporalmente debido a actividad inusual o violación de nuestros términos."}
               <br /><br />
               Por favor, contacta a soporte para más información.
             </AlertDialogDescription>
