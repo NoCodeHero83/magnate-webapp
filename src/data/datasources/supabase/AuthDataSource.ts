@@ -1,6 +1,6 @@
 // Authentication Data Source
 import { supabase } from '../../../lib/supabase';
-import { User } from '../../../domain/entities/User';
+import { User, USER_SELECT } from '../../../domain/entities/User';
 
 export interface LoginUserData {
     id: string;
@@ -57,6 +57,14 @@ export class AuthDataSource {
                 return { success: false, error: 'Cuenta suspendida' };
             }
 
+            if (loginUser.verification_status === 'rejected') {
+                return { success: false, error: 'Tu solicitud de cuenta fue rechazada. Contacta a soporte para más información.' };
+            }
+
+            if (loginUser.verification_status === 'pending') {
+                return { success: false, error: 'Tu cuenta está en revisión. Te avisaremos por email cuando sea aprobada.' };
+            }
+
             if (loginUser.verification_status !== 'verified') {
                 return { success: false, error: 'Cuenta pendiente de verificación' };
             }
@@ -88,7 +96,7 @@ export class AuthDataSource {
             // 6. Fetch full user data to ensure we have all fields for the domain entity
             const { data: fullUserData, error: fullUserError } = await supabase
                 .from('users')
-                .select('*')
+                .select(USER_SELECT)
                 .eq('id', authData.user.id)
                 .single();
 

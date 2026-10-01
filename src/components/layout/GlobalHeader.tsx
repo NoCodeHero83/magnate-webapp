@@ -5,6 +5,7 @@ import UserAvatar from "./UserAvatar";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { useAuth } from "@/presentation/contexts/AuthContext";
 import { cn } from "@/lib/utils";
+import { getDisplayName } from "@/domain/entities/User";
 
 interface GlobalHeaderProps {
   title?: string;
@@ -33,7 +34,7 @@ const GlobalHeader = ({
   const { collapsed, toggleSidebar } = useSidebar();
   const { user } = useAuth();
   
-  const finalUserName = userName || (user ? `${user.first_name} ${user.last_name}` : "Usuario");
+  const finalUserName = userName || getDisplayName(user);
   const finalUserImageUrl = userImageUrl || user?.photo_url;
 
   return (

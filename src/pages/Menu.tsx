@@ -18,6 +18,7 @@ import AppLayout from "@/components/layout/AppLayout";
 import GlobalHeader from "@/components/layout/GlobalHeader";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/presentation/contexts/AuthContext";
+import { getDisplayName } from "@/domain/entities/User";
 
 interface MenuItemProps {
   icon: LucideIcon;
@@ -102,7 +103,7 @@ const Menu = () => {
         showBackButton
         backPath="/dashboard"
         showAvatar
-        userName={user ? `${user.first_name} ${user.last_name}` : "Usuario"}
+        userName={getDisplayName(user)}
       />
 
       <div className="p-4 space-y-6 pb-24 md:pb-8">

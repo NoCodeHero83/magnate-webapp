@@ -5,11 +5,12 @@ import BalanceCard from "@/components/dashboard/BalanceCard";
 import QuickActions from "@/components/dashboard/QuickActions";
 import TransactionsList from "@/components/dashboard/TransactionsList";
 import { useAuth } from "@/presentation/contexts/AuthContext";
+import { getDisplayName } from "@/domain/entities/User";
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const firstName = user?.first_name || "Usuario";
-  const fullName = user ? `${user.first_name} ${user.last_name}` : "Usuario";
+  const fullName = getDisplayName(user);
+  const firstName = user?.account_type === "business" ? fullName : user?.first_name || "Usuario";
 
   return (
     <AppLayout>

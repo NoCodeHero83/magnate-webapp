@@ -12,6 +12,7 @@ import { TransactionDataSource, TransferValidationResult } from "@/data/datasour
 import { TransactionRepository } from "@/data/repositories/TransactionRepository";
 import { ValidateTransfer } from "@/domain/usecases/transaction/ValidateTransfer";
 import { toast } from "sonner";
+import { getDisplayName } from "@/domain/entities/User";
 
 
 // Initialize dependencies
@@ -71,7 +72,7 @@ const Transfer = () => {
     return () => clearTimeout(timer);
   }, [recipient, account?.id]);
 
-  const fullName = user ? `${user.first_name} ${user.last_name}` : "Usuario";
+  const fullName = getDisplayName(user);
   const isRecipientValid = !!recipientData;
   const numericAmount = parseAmount(amount);
   const isAmountValid = numericAmount > 0 && numericAmount <= (account?.balance || 0);

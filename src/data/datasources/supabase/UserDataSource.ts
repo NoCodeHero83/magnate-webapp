@@ -1,6 +1,6 @@
 // User Data Source
 import { supabase } from '../../../lib/supabase';
-import { User } from '../../../domain/entities/User';
+import { User, USER_SELECT } from '../../../domain/entities/User';
 
 export class UserDataSource {
     /**
@@ -9,7 +9,7 @@ export class UserDataSource {
     async getUserById(userId: string): Promise<User | null> {
         const { data, error } = await supabase
             .from('users')
-            .select('*')
+            .select(USER_SELECT)
             .eq('id', userId)
             .single();
 
@@ -38,11 +38,13 @@ export class UserDataSource {
      * Update user profile
      */
     async updateUser(userId: string, data: Partial<User>): Promise<User> {
+        // business_profile es un embed, no una columna de users
+        const { business_profile: _bp, ...columns } = data;
         const { data: updatedUser, error } = await supabase
             .from('users')
-            .update(data)
+            .update(columns)
             .eq('id', userId)
-            .select()
+            .select(USER_SELECT)
             .single();
 
         if (error) {

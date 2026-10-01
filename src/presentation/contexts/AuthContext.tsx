@@ -69,7 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 },
                 async (payload) => {
                     const newUser = payload.new as User;
-                    if (newUser.verification_status === 'suspended') {
+                    if (newUser.verification_status === 'suspended' || newUser.verification_status === 'rejected') {
 
                         await logout();
                         window.location.replace('/login?reason=suspended');

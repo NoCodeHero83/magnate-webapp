@@ -12,6 +12,7 @@ import { TransactionDataSource } from "@/data/datasources/supabase/TransactionDa
 import { TransactionRepository } from "@/data/repositories/TransactionRepository";
 import { GetAccountStatistics } from "@/domain/usecases/transaction/GetAccountStatistics";
 import { GetBalanceTimeline } from "@/domain/usecases/transaction/GetBalanceTimeline";
+import { getDisplayName } from "@/domain/entities/User";
 
 const Statistics = () => {
   const { user, account } = useAuth();
@@ -205,7 +206,7 @@ const Statistics = () => {
         title="Estadísticas"
         showBackButton
         showAvatar
-        userName={user ? `${user.first_name} ${user.last_name}` : "Usuario"}
+        userName={getDisplayName(user)}
       />
 
       <div className="p-4 space-y-5 pb-24 md:pb-8">

@@ -11,17 +11,39 @@ import ProfileMenuSection from "@/components/profile/ProfileMenuSection";
 import LogoutModal from "@/components/profile/LogoutModal";
 import { useAuth } from "@/presentation/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { getDisplayName } from "@/domain/entities/User";
 
 const Profile = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const fullName = user ? `${user.first_name} ${user.last_name}` : "Usuario";
+  const fullName = getDisplayName(user);
   const isVerified = user?.verification_status === 'verified';
+  const company = user?.account_type === "business" ? user.business_profile : null;
+
+  const formatCuit = (cuit?: string | null) =>
+    cuit && cuit.length === 11 ? `${cuit.slice(0, 2)}-${cuit.slice(2, 10)}-${cuit.slice(10)}` : cuit || "No disponible";
+  const formatDate = (iso?: string | null) => {
+    if (!iso) return "No disponible";
+    const [y, m, d] = iso.split("-");
+    return `${d}/${m}/${y}`;
+  };
+
+  // Datos de la empresa (solo Persona Jurídica)
+  const companyFields = company
+    ? [
+      { label: "Razón social", value: company.legal_name, locked: true },
+      ...(company.trade_name ? [{ label: "Nombre de fantasía", value: company.trade_name, locked: true }] : []),
+      { label: "CUIT", value: formatCuit(company.cuit), locked: true },
+      { label: "Tipo societario", value: company.legal_entity?.name || company.legal_entity_type, locked: true },
+      { label: "Fecha de inscripción", value: formatDate(company.incorporation_date), locked: true },
+    ]
+    : [];
 
   // Read-only identity fields from real user data
   const identityFields = [
+    ...(company ? [{ label: "Nombre", value: `${user?.first_name ?? ""} ${user?.last_name ?? ""}`.trim(), locked: true }] : []),
     { label: "DNI", value: user?.dni || "No disponible", locked: true },
     { label: "CUIT/CUIL", value: user?.cuit_cuil || "No disponible", locked: true },
   ];
@@ -68,9 +90,18 @@ const Profile = () => {
           />
         </section>
 
+        {/* Company Card - Read Only (Persona Jurídica) */}
+        {company && (
+          <ProfileInfoCard
+            title="Empresa"
+            fields={companyFields}
+            onFieldChange={() => { }}
+          />
+        )}
+
         {/* Identity Card - Read Only */}
         <ProfileInfoCard
-          title="Identidad"
+          title={company ? "Representante legal" : "Identidad"}
           fields={identityFields}
           onFieldChange={() => { }} // No-op for read-only
         />

@@ -16,6 +16,7 @@ import { AccountMovement } from "@/domain/entities/Transaction";
 import { TransactionDataSource } from "@/data/datasources/supabase/TransactionDataSource";
 import { TransactionRepository } from "@/data/repositories/TransactionRepository";
 import { GetAccountMovements } from "@/domain/usecases/transaction/GetAccountMovements";
+import { getDisplayName } from "@/domain/entities/User";
 
 // Initialize dependencies
 const transactionDataSource = new TransactionDataSource();
@@ -33,7 +34,7 @@ const Movements = () => {
   const [movements, setMovements] = useState<AccountMovement[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fullName = user ? `${user.first_name} ${user.last_name}` : "Usuario";
+  const fullName = getDisplayName(user);
 
   // Load movements
   useEffect(() => {

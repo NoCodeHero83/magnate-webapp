@@ -8,6 +8,7 @@ import { useAuth } from "@/presentation/contexts/AuthContext";
 import { QRCodeCanvas } from "qrcode.react";
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
+import { getHolderName } from "@/domain/entities/User";
 
 const ShareCVU = () => {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ const ShareCVU = () => {
     fetchQr();
   }, [account?.id]);
 
-  const fullName = user ? `${user.first_name} ${user.last_name}` : "Usuario";
+  const fullName = getHolderName(user);
   const accountData = {
     titular: fullName,
     cvu: account?.cvu || "No disponible",
