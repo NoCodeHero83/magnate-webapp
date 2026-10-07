@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Loader2, Send } from "lucide-react";
+import { AlertCircle, ArrowLeft, Loader2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
 import { formatCurrencyAR, getInitials } from "@/lib/formatters";
@@ -40,7 +40,12 @@ const ConfirmPay = () => {
       cancelled = true;
     };
   }, [account?.id, transferData?.recipient, transferData?.amount]);
-  const hasFee = !!quote && quote.fee > 0;
+  const hasFee = !!quote && quote.fee > 0 && !quote.blockingError;
+  // No se puede confirmar: destino inválido, monto menor a la comisión o saldo insuficiente
+  const quoteProblem = quote?.blockingError
+    ?? (quote?.insufficientBalance
+      ? `Saldo insuficiente: necesitas $ ${formatCurrencyAR(quote.totalDebit)}${quote.fee > 0 ? " (monto más comisión)" : ""}.`
+      : null);
 
   /** Pide al servidor el código para ESTA transferencia (cuenta, destino y monto) */
   const requestCode = async (): Promise<string | void> => {
@@ -257,6 +262,13 @@ const ConfirmPay = () => {
             </div>
           </div>
 
+          {quoteProblem && (
+            <div role="alert" className="flex items-start gap-2 rounded-xl bg-destructive/10 p-4 mb-4 text-sm text-destructive">
+              <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+              <span>{quoteProblem}</span>
+            </div>
+          )}
+
           {/* Info Card */}
           <div className="bg-accent/10 rounded-xl p-4 mb-8">
             <p className="text-sm text-accent text-center">
@@ -267,7 +279,7 @@ const ConfirmPay = () => {
           {/* Confirm Button */}
           <Button
             onClick={handleOpenSecurityModal}
-            disabled={quoteLoading}
+            disabled={quoteLoading || !!quoteProblem}
             className="w-full h-14 bg-accent hover:bg-accent/90 text-accent-foreground text-lg font-semibold rounded-2xl gap-2"
           >
             <Send className="h-5 w-5" />

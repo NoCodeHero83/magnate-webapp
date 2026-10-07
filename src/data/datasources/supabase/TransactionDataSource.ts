@@ -41,6 +41,7 @@ const transferErrorMessage = (raw: string): string => {
     if (raw.includes('MONTHLY_LIMIT_EXCEEDED')) return 'Excede el límite mensual de transferencias.';
     if (raw.includes('DAILY_LIMIT_EXCEEDED')) return 'Excede el límite diario de transferencias.';
     if (raw.includes('PER_TRANSACTION_LIMIT_EXCEEDED')) return 'Excede el límite por transacción.';
+    if (raw.includes('DESTINATION_NOT_FOUND')) return 'No encontramos una cuenta con ese alias, CVU o CBU.';
     if (raw.includes('DESTINATION_NOT_ACTIVE')) return 'La cuenta destino no está habilitada para recibir transferencias.';
     if (raw.includes('ACCOUNT_NOT_ACTIVE')) return 'Tu cuenta no está habilitada para operar en este momento.';
     if (raw.includes('SAME_ACCOUNT')) return 'No puedes transferir a tu propia cuenta.';
@@ -55,7 +56,20 @@ export interface TransferQuote {
     totalDebit: number;
     /** Lo que sale hacia el destino */
     amountSent: number;
+    /** El saldo no alcanza para el total (aviso previo; la transferencia lo valida igual) */
+    insufficientBalance: boolean;
+    /** Motivo por el que la transferencia no puede hacerse (null si puede) */
+    blockingError: string | null;
 }
+
+/** Mensajes de quote_transfer que impiden confirmar */
+const QUOTE_ERRORS: Record<string, string> = {
+    DESTINATION_NOT_FOUND: 'No encontramos una cuenta con ese alias, CVU o CBU.',
+    DESTINATION_NOT_ACTIVE: 'La cuenta destino no está habilitada para recibir transferencias.',
+    SAME_ACCOUNT: 'No puedes transferir a tu propia cuenta.',
+    ACCOUNT_NOT_ACTIVE: 'Tu cuenta no está habilitada para operar en este momento.',
+    INVALID_AMOUNT: 'El monto no es válido.',
+};
 
 export type TransferWithCodeResult =
     | { status: 'ok'; result: ProcessTransferResult }
@@ -295,15 +309,29 @@ export class TransactionDataSource {
             p_amount: amount,
         });
         const result = data as any;
-        if (error || !result?.success) {
+        if (error || !result) {
             if (error) console.error('Error calculando la comisión:', error);
-            return null;
+            return null; // sin conexión: la transferencia se valida al confirmar
+        }
+        if (!result.success) {
+            if (result.error === 'AMOUNT_TOO_LOW_FOR_FEE') {
+                const fee = Number(result.fee) || 0;
+                return {
+                    fee, chargeMode: 'deduct', totalDebit: amount, amountSent: 0, insufficientBalance: false,
+                    blockingError: `El monto no alcanza para cubrir la comisión ($ ${fee.toLocaleString('es-AR', { minimumFractionDigits: 2 })}).`,
+                };
+            }
+            const message = QUOTE_ERRORS[result.error];
+            if (!message) return null;
+            return { fee: 0, chargeMode: 'deduct', totalDebit: amount, amountSent: amount, insufficientBalance: false, blockingError: message };
         }
         return {
             fee: Number(result.fee) || 0,
             chargeMode: result.charge_mode,
             totalDebit: Number(result.total_debit) || amount,
             amountSent: Number(result.amount_sent) || amount,
+            insufficientBalance: result.insufficient_balance === true,
+            blockingError: null,
         };
     }
 
