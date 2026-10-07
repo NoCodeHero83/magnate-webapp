@@ -36,7 +36,8 @@ const OTP_ERRORS: Record<string, string> = {
 
 /** Mensajes legibles para los errores de la transferencia */
 const transferErrorMessage = (raw: string): string => {
-    if (raw.includes('INSUFFICIENT_BALANCE')) return 'Saldo insuficiente.';
+    if (raw.includes('AMOUNT_TOO_LOW_FOR_FEE')) return 'El monto no alcanza para cubrir la comisión.';
+    if (raw.includes('INSUFFICIENT_BALANCE')) return 'Saldo insuficiente para cubrir el monto y la comisión.';
     if (raw.includes('MONTHLY_LIMIT_EXCEEDED')) return 'Excede el límite mensual de transferencias.';
     if (raw.includes('DAILY_LIMIT_EXCEEDED')) return 'Excede el límite diario de transferencias.';
     if (raw.includes('PER_TRANSACTION_LIMIT_EXCEEDED')) return 'Excede el límite por transacción.';
@@ -45,6 +46,16 @@ const transferErrorMessage = (raw: string): string => {
     if (raw.includes('SAME_ACCOUNT')) return 'No puedes transferir a tu propia cuenta.';
     return 'No se pudo completar la transferencia.';
 };
+
+/** Lo que cuesta una transferencia antes de confirmarla (lo calcula el servidor) */
+export interface TransferQuote {
+    fee: number;
+    chargeMode: 'deduct' | 'on_top';
+    /** Lo que se debita de la cuenta */
+    totalDebit: number;
+    /** Lo que sale hacia el destino */
+    amountSent: number;
+}
 
 export type TransferWithCodeResult =
     | { status: 'ok'; result: ProcessTransferResult }
@@ -271,6 +282,29 @@ export class TransactionDataSource {
             net_balance: Number(item.net_balance || 0),
             cumulative_balance: Number(item.cumulative_balance || 0),
         }));
+    }
+
+    /**
+     * Comisión de una transferencia antes de confirmarla. null si no se pudo calcular
+     * (la transferencia igual la valida el servidor).
+     */
+    async quoteTransfer(fromAccountId: string, toIdentifier: string, amount: number): Promise<TransferQuote | null> {
+        const { data, error } = await supabase.rpc('quote_transfer', {
+            p_from_account_id: fromAccountId,
+            p_to_identifier: toIdentifier.trim(),
+            p_amount: amount,
+        });
+        const result = data as any;
+        if (error || !result?.success) {
+            if (error) console.error('Error calculando la comisión:', error);
+            return null;
+        }
+        return {
+            fee: Number(result.fee) || 0,
+            chargeMode: result.charge_mode,
+            totalDebit: Number(result.total_debit) || amount,
+            amountSent: Number(result.amount_sent) || amount,
+        };
     }
 
     /**

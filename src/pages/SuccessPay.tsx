@@ -14,6 +14,10 @@ interface PaymentState {
   };
   transactionId: string;
   date: Date;
+  /** Comisión cobrada (0 si no hubo) */
+  commission?: number;
+  totalDebit?: number;
+  amountSent?: number;
 }
 
 const SuccessPay = () => {
@@ -167,6 +171,26 @@ const SuccessPay = () => {
                 </p>
               </div>
             </div>
+
+            {(state?.commission ?? 0) > 0 && (
+              <>
+                <div className="border-t border-dashed border-border" />
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Enviado</span>
+                    <span className="font-medium text-foreground">{formatCurrencyLocal(String(state!.amountSent ?? 0))}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Comisión</span>
+                    <span className="font-medium text-foreground">{formatCurrencyLocal(String(state!.commission))}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Total debitado</span>
+                    <span className="font-semibold text-foreground">{formatCurrencyLocal(String(state!.totalDebit ?? 0))}</span>
+                  </div>
+                </div>
+              </>
+            )}
 
             {/* Divider */}
             <div className="border-t border-dashed border-border" />

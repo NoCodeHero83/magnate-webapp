@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Loader2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { formatCurrencyAR, getInitials } from "@/lib/formatters";
 import { useOtpVerification, OtpVerifyResult } from "@/hooks/useOtpVerification";
 import { TransferState } from "@/types";
 import { useAuth } from "@/presentation/contexts/AuthContext";
-import { TransactionDataSource } from "@/data/datasources/supabase/TransactionDataSource";
+import { TransactionDataSource, TransferQuote } from "@/data/datasources/supabase/TransactionDataSource";
 import AppLayout from "@/components/layout/AppLayout";
 import GlobalHeader from "@/components/layout/GlobalHeader";
 import SecurityVerificationModal from "@/components/transfer/SecurityVerificationModal";
@@ -22,6 +22,25 @@ const ConfirmPay = () => {
   const [showSecurityModal, setShowSecurityModal] = useState(false);
 
   const transferData = location.state as TransferState | null;
+
+  // Comisión calculada por el servidor
+  const [quote, setQuote] = useState<TransferQuote | null>(null);
+  const [quoteLoading, setQuoteLoading] = useState(true);
+  useEffect(() => {
+    if (!account?.id || !transferData) {
+      setQuoteLoading(false);
+      return;
+    }
+    let cancelled = false;
+    transactionDataSource
+      .quoteTransfer(account.id, transferData.recipient, transferData.amount)
+      .then((result) => !cancelled && setQuote(result))
+      .finally(() => !cancelled && setQuoteLoading(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [account?.id, transferData?.recipient, transferData?.amount]);
+  const hasFee = !!quote && quote.fee > 0;
 
   /** Pide al servidor el código para ESTA transferencia (cuenta, destino y monto) */
   const requestCode = async (): Promise<string | void> => {
@@ -87,6 +106,9 @@ const ConfirmPay = () => {
           type: "CBU/Alias"
         },
         concept: transferData.concept,
+        commission: Number((result as any).commission) || 0,
+        totalDebit: Number((result as any).total_debit) || 0,
+        amountSent: Number((result as any).amount_sent) || 0,
         transactionId: result.reference_number || result.transaction_id,
         date: new Date(),
       },
@@ -205,6 +227,33 @@ const ConfirmPay = () => {
                   </span>
                 </div>
               )}
+              {quoteLoading ? (
+                <div className="flex justify-center pt-1">
+                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                </div>
+              ) : hasFee ? (
+                <>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Comisión</span>
+                    <span className="text-sm text-foreground tabular-nums">$ {formatCurrencyAR(quote!.fee)}</span>
+                  </div>
+                  {quote!.chargeMode === "deduct" && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Recibe el destinatario</span>
+                      <span className="text-sm text-foreground tabular-nums">$ {formatCurrencyAR(quote!.amountSent)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center border-t border-border pt-3">
+                    <span className="text-sm font-semibold text-foreground">Total a debitar</span>
+                    <span className="text-base font-bold text-foreground tabular-nums">$ {formatCurrencyAR(quote!.totalDebit)}</span>
+                  </div>
+                </>
+              ) : (
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Comisión</span>
+                  <span className="text-sm text-foreground">{quote ? "Sin comisión" : "Se calcula al confirmar"}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -218,6 +267,7 @@ const ConfirmPay = () => {
           {/* Confirm Button */}
           <Button
             onClick={handleOpenSecurityModal}
+            disabled={quoteLoading}
             className="w-full h-14 bg-accent hover:bg-accent/90 text-accent-foreground text-lg font-semibold rounded-2xl gap-2"
           >
             <Send className="h-5 w-5" />
