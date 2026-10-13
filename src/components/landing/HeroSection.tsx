@@ -32,7 +32,7 @@ const HeroSection = () => {
             </div>
 
             {/* Title */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 animate-fade-up" style={{ animationDelay: '0.1s' }}>
+            <h1 className="text-4xl md:text-5xl/none lg:text-6xl/none font-bold text-white leading-tight mb-6 animate-fade-up" style={{ animationDelay: '0.1s' }}>
               La infraestructura financiera que tu negocio merece.
             </h1>
 

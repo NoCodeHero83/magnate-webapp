@@ -167,7 +167,7 @@ const ShareCVU = () => {
           <div className="space-y-4">
             {/* Titular */}
             <div className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              <span className="block text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 Titular
               </span>
               <p className="text-foreground font-semibold text-lg">
@@ -177,7 +177,7 @@ const ShareCVU = () => {
 
             {/* CVU */}
             <div className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              <span className="block text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 CVU
               </span>
               <p className="text-foreground font-mono text-base break-all">
@@ -187,7 +187,7 @@ const ShareCVU = () => {
 
             {/* Alias */}
             <div className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              <span className="block text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 Alias
               </span>
               <p className="text-accent font-semibold text-base">
@@ -197,7 +197,7 @@ const ShareCVU = () => {
 
             {/* CBU */}
             <div className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              <span className="block text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 CBU
               </span>
               <p className="text-foreground font-mono text-base break-all">

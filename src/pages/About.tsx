@@ -31,10 +31,10 @@ const About = () => {
       {/* Hero Section */}
       <section className="pt-32 pb-20 lg:pt-40 lg:pb-28 bg-linear-to-b from-primary/5 to-background">
         <div className="container mx-auto px-4 lg:px-8 text-center max-w-3xl">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight animate-fade-up">
+          <h1 className="text-3xl md:text-4xl/10 lg:text-5xl/none font-bold text-foreground mb-6 leading-tight animate-fade-up">
             Transformando las finanzas de Argentina.
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed animate-fade-up [animation-delay:200ms]">
+          <p className="text-lg md:text-xl/7 text-muted-foreground leading-relaxed animate-fade-up [animation-delay:200ms]">
             En Magnate, creemos que gestionar tu dinero debe ser tan simple como enviar un mensaje. 
             Tecnología financiera al servicio de los emprendedores.
           </p>
