@@ -45,6 +45,7 @@ const transferErrorMessage = (raw: string): string => {
     if (raw.includes('DESTINATION_NOT_ACTIVE')) return 'La cuenta destino no está habilitada para recibir transferencias.';
     if (raw.includes('ACCOUNT_NOT_ACTIVE')) return 'Tu cuenta no está habilitada para operar en este momento.';
     if (raw.includes('SAME_ACCOUNT')) return 'No puedes transferir a tu propia cuenta.';
+    if (raw.includes('PIN_UPGRADE_REQUIRED')) return 'Por seguridad debes crear un PIN de 6 dígitos desde la app Magnate antes de transferir.';
     return 'No se pudo completar la transferencia.';
 };
 
