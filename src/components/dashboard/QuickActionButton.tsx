@@ -16,7 +16,7 @@ const QuickActionButton = ({ icon: Icon, label, isPrimary = false, onClick }: Qu
       <div
         className={`size-16 rounded-2xl flex items-center justify-center transition-transform active:scale-95 ${isPrimary
           ? "bg-accent shadow-glow"
-          : "bg-card border border-border shadow-sm hover:border-accent/30"
+          : "bg-card border border-border shadow-xs hover:border-accent/30"
           }`}
       >
         <Icon

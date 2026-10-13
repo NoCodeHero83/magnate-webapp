@@ -11,7 +11,7 @@ const ProfileMenuItem = ({ icon: Icon, label, subtitle, onClick }: ProfileMenuIt
   return (
     <button
       onClick={onClick}
-      className="flex items-center w-full p-4 bg-card rounded-2xl border border-border hover:bg-muted/50 hover:border-primary/50 transition-all group shadow-sm min-h-[56px] touch-manipulation"
+      className="flex items-center w-full p-4 bg-card rounded-2xl border border-border hover:bg-muted/50 hover:border-primary/50 transition-all group shadow-xs min-h-[56px] touch-manipulation"
     >
       <div className="bg-muted p-2.5 rounded-full border border-border group-hover:border-primary/50 mr-4 shrink-0 transition-colors">
         <Icon className="size-5 text-muted-foreground group-hover:text-primary transition-colors" />

@@ -11,7 +11,7 @@ const DashboardHeader = ({ userName = "Santiago" }: DashboardHeaderProps) => {
       {/* Top row: Logo + Avatar */}
       <div className="flex items-center justify-between mb-6 md:hidden">
         <Logo className="h-8" />
-        <button className="group relative outline-none">
+        <button className="group relative outline-hidden">
           <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-accent/20 cursor-pointer hover:border-accent transition-colors bg-muted" />
         </button>
       </div>

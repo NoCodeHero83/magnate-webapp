@@ -166,7 +166,7 @@ const AmountInput = ({ value, onChange, availableBalance }: AmountInputProps) =>
             onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            className={`bg-transparent border-none p-0 ${inputWidthClass} ${fontSizeClass} font-bold tracking-tight text-center focus:ring-0 focus:outline-none caret-accent selection:bg-accent/20 placeholder:text-muted-foreground/30 transition-all duration-200 ${
+            className={`bg-transparent border-none p-0 ${inputWidthClass} ${fontSizeClass} font-bold tracking-tight text-center focus:ring-0 focus:outline-hidden caret-accent selection:bg-accent/20 placeholder:text-muted-foreground/30 transition-all duration-200 ${
               isInsufficientBalance ? "text-destructive" : "text-foreground"
             }`}
             placeholder="0,00"
@@ -174,7 +174,7 @@ const AmountInput = ({ value, onChange, availableBalance }: AmountInputProps) =>
         </div>
       </div>
 
-      <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm transition-colors ${
+      <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border shadow-xs transition-colors ${
         isInsufficientBalance 
           ? "bg-destructive/10 border-destructive/30" 
           : "bg-secondary border-border"

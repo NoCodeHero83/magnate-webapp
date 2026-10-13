@@ -83,7 +83,7 @@ const HeroSection = () => {
                     </div>
 
                     {/* Balance Card */}
-                    <div className="bg-gradient-to-br from-primary to-primary/80 rounded-xl p-5 text-primary-foreground">
+                    <div className="bg-linear-to-br from-primary to-primary/80 rounded-xl p-5 text-primary-foreground">
                       <p className="text-sm opacity-80 mb-1">Saldo disponible</p>
                       <p className="text-3xl font-bold">$ 1.250.400,00</p>
                       <div className="flex items-center gap-2 mt-3">

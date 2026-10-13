@@ -24,7 +24,7 @@ const ProfileAvatar = ({
     <div className="flex flex-col items-center gap-4">
       {/* Avatar */}
       <div className="relative group cursor-pointer">
-        <div className="size-32 rounded-full ring-4 ring-card shadow-xl bg-gradient-to-br from-primary/20 via-primary/40 to-primary/60 flex items-center justify-center overflow-hidden">
+        <div className="size-32 rounded-full ring-4 ring-card shadow-xl bg-linear-to-br from-primary/20 via-primary/40 to-primary/60 flex items-center justify-center overflow-hidden">
           {imageUrl ? (
             <img 
               src={imageUrl} 

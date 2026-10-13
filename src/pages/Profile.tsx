@@ -81,7 +81,7 @@ const Profile = () => {
         </div>
 
         {/* Avatar Section */}
-        <section className="flex flex-col items-center p-6 gap-6 bg-card border-b border-border shadow-sm">
+        <section className="flex flex-col items-center p-6 gap-6 bg-card border-b border-border shadow-xs">
           <ProfileAvatar
             name={fullName}
             subtitle={user?.email || "Usuario"}
@@ -118,7 +118,7 @@ const Profile = () => {
         <div className="mt-10 px-6 mb-8">
           <button
             onClick={() => setShowLogoutModal(true)}
-            className="w-full py-4 px-6 rounded-full border-2 border-destructive/40 bg-destructive/5 text-destructive font-bold tracking-wide hover:bg-destructive hover:text-white hover:border-destructive transition-all duration-300 flex items-center justify-center gap-2 shadow-sm min-h-[56px] dark:bg-destructive/10 dark:hover:bg-destructive"
+            className="w-full py-4 px-6 rounded-full border-2 border-destructive/40 bg-destructive/5 text-destructive font-bold tracking-wide hover:bg-destructive hover:text-white hover:border-destructive transition-all duration-300 flex items-center justify-center gap-2 shadow-xs min-h-[56px] dark:bg-destructive/10 dark:hover:bg-destructive"
           >
             <LogOut className="size-5" />
             Cerrar Sesión

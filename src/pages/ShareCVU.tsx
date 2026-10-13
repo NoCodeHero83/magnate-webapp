@@ -102,7 +102,7 @@ const ShareCVU = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-xs border-b border-border">
         <div className="flex items-center justify-between px-4 h-16">
           <button
             onClick={() => navigate("/dashboard")}

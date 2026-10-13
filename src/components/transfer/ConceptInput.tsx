@@ -20,7 +20,7 @@ const ConceptInput = ({ value, onChange }: ConceptInputProps) => {
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full bg-secondary border border-border rounded-xl py-4 pl-6 pr-4 text-base font-medium text-foreground outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all placeholder:text-muted-foreground/40 placeholder:font-normal min-h-[44px]"
+          className="w-full bg-secondary border border-border rounded-xl py-4 pl-6 pr-4 text-base font-medium text-foreground outline-hidden focus:border-accent focus:ring-1 focus:ring-accent transition-all placeholder:text-muted-foreground/40 placeholder:font-normal min-h-[44px]"
           placeholder="Ej: Varios, Alquiler, Expensas..."
           maxLength={100}
           autoComplete="off"

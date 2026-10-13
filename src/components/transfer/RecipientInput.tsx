@@ -24,7 +24,7 @@ const RecipientInput = ({
       </p>
 
       <div className="relative group">
-        <div className={`flex w-full items-center rounded-full bg-secondary/50 border transition-all duration-300 shadow-sm ${isValid
+        <div className={`flex w-full items-center rounded-full bg-secondary/50 border transition-all duration-300 shadow-xs ${isValid
           ? "border-success ring-1 ring-success/20"
           : error
             ? "border-destructive ring-1 ring-destructive/20"
@@ -34,7 +34,7 @@ const RecipientInput = ({
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className="flex-1 w-full bg-transparent border-none outline-none py-4 pl-6 pr-2 text-base font-medium placeholder:text-muted-foreground/40 text-foreground focus:ring-0 rounded-l-full min-h-[56px]"
+            className="flex-1 w-full bg-transparent border-none outline-hidden py-4 pl-6 pr-2 text-base font-medium placeholder:text-muted-foreground/40 text-foreground focus:ring-0 rounded-l-full min-h-[56px]"
             placeholder="Ingresá CBU, CVU o Alias"
             autoComplete="off"
           />

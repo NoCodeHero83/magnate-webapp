@@ -47,7 +47,7 @@ const AliasManagement = ({ userCuit = "20123456789" }: AliasManagementProps) => 
   };
 
   return (
-    <section className="md:hidden bg-card border border-border rounded-2xl p-4 mx-4 mt-4 shadow-sm">
+    <section className="md:hidden bg-card border border-border rounded-2xl p-4 mx-4 mt-4 shadow-xs">
       <h3 className="text-sm font-semibold text-foreground mb-3">
         Administración de Alias
       </h3>

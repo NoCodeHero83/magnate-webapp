@@ -22,7 +22,7 @@ const TransactionGroup = ({ dateLabel, transactions, onTransactionClick }: Trans
 
   return (
     <div className="mb-6">
-      <div className="sticky top-0 z-10 py-2 mb-1 bg-background/90 backdrop-blur-sm w-full">
+      <div className="sticky top-0 z-10 py-2 mb-1 bg-background/90 backdrop-blur-xs w-full">
         <h3 className="text-muted-foreground text-xs font-bold uppercase tracking-wider">
           {dateLabel}
         </h3>

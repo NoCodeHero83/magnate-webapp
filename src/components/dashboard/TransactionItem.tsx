@@ -12,7 +12,7 @@ const TransactionItem = ({ icon: Icon, title, description, amount, type }: Trans
   const isIncome = type === "income";
 
   return (
-    <div className="flex items-center justify-between p-4 bg-card rounded-xl border border-border shadow-sm hover:border-accent/20 transition-colors">
+    <div className="flex items-center justify-between p-4 bg-card rounded-xl border border-border shadow-xs hover:border-accent/20 transition-colors">
       <div className="flex items-center gap-3">
         <div
           className={`size-10 rounded-full flex items-center justify-center shrink-0 border ${isIncome ? "bg-accent/10 border-transparent" : "bg-muted border-border"

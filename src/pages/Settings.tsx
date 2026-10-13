@@ -68,7 +68,7 @@ const Settings = () => {
 
       <div className="flex flex-col flex-1 p-4 gap-4">
         {/* Apariencia */}
-        <section className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+        <section className="bg-card rounded-2xl border border-border shadow-xs overflow-hidden">
           <div className="px-4 py-3 border-b border-border">
             <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
               Apariencia
@@ -93,7 +93,7 @@ const Settings = () => {
         </section>
 
         {/* Notificaciones */}
-        <section className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+        <section className="bg-card rounded-2xl border border-border shadow-xs overflow-hidden">
           <div className="px-4 py-3 border-b border-border">
             <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
               Notificaciones

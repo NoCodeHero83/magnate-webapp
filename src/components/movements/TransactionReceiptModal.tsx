@@ -128,7 +128,7 @@ const TransactionReceiptModal = ({ transaction, onClose }: TransactionReceiptMod
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4"
       onClick={onClose}
     >
       <div
@@ -161,14 +161,14 @@ const TransactionReceiptModal = ({ transaction, onClose }: TransactionReceiptMod
           <div className="p-8 space-y-6">
             {/* Recipient/Origin */}
             <div className="flex items-center gap-5">
-              <div className="w-14 h-14 bg-[#2F80ED]/10 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-14 h-14 bg-[#2F80ED]/10 rounded-full flex items-center justify-center shrink-0">
                 <Building2 className="h-7 w-7 text-[#2F80ED]" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold text-gray-400 dark:text-white/40 uppercase tracking-wider mb-1">
                   {isIncome ? 'Origen' : 'Destinatario'}
                 </p>
-                <p className="font-bold text-gray-900 dark:text-white text-lg leading-snug break-words">
+                <p className="font-bold text-gray-900 dark:text-white text-lg leading-snug wrap-break-word">
                   {transaction.name || "Desconocido"}
                 </p>
                 <p className="text-sm text-gray-500 dark:text-white/60 font-medium mt-0.5">

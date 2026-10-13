@@ -17,7 +17,7 @@ const SummaryCards = ({ data }: SummaryCardsProps) => {
   return (
     <div className="grid grid-cols-2 gap-4">
       {/* Income Card */}
-      <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50 transition-all duration-300 hover:shadow-md group">
+      <div className="bg-card rounded-3xl p-5 shadow-xs border border-border/50 transition-all duration-300 hover:shadow-md group">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center transition-transform group-hover:scale-110 duration-300">
             <ArrowDownLeft className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
@@ -34,7 +34,7 @@ const SummaryCards = ({ data }: SummaryCardsProps) => {
       </div>
 
       {/* Expenses Card */}
-      <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50 transition-all duration-300 hover:shadow-md group">
+      <div className="bg-card rounded-3xl p-5 shadow-xs border border-border/50 transition-all duration-300 hover:shadow-md group">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-2xl bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center transition-transform group-hover:scale-110 duration-300">
             <ArrowUpRight className="w-5 h-5 text-rose-600 dark:text-rose-400" />

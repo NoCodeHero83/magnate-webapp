@@ -245,7 +245,7 @@ const ApisWiki = () => {
             </section>
 
             {/* Help Section */}
-            <div className="p-6 rounded-xl bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20">
+            <div className="p-6 rounded-xl bg-linear-to-r from-primary/10 to-primary/5 border border-primary/20">
               <h3 className="text-lg font-semibold text-foreground mb-2">¿Necesitás ayuda?</h3>
               <p className="text-muted-foreground text-sm">
                 Si tenés dudas sobre la integración, contactanos a{" "}

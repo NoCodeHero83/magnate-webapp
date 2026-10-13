@@ -24,17 +24,17 @@ const features = [
   {
     icon: Shield,
     label: "Seguro",
-    gradientClass: "bg-gradient-to-b from-accent/80 to-accent",
+    gradientClass: "bg-linear-to-b from-accent/80 to-accent",
   },
   {
     icon: Handshake,
     label: "Confiable",
-    gradientClass: "bg-gradient-to-b from-accent/70 to-accent/90",
+    gradientClass: "bg-linear-to-b from-accent/70 to-accent/90",
   },
   {
     icon: Zap,
     label: "Eficaz",
-    gradientClass: "bg-gradient-to-b from-accent/60 to-accent/80",
+    gradientClass: "bg-linear-to-b from-accent/60 to-accent/80",
   },
 ];
 

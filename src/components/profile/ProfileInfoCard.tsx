@@ -44,7 +44,7 @@ const ProfileInfoCard = ({ title, fields, onFieldChange }: ProfileInfoCardProps)
         {title}
       </h3>
       <div className="px-4">
-        <div className="bg-card rounded-2xl overflow-hidden border border-border shadow-sm">
+        <div className="bg-card rounded-2xl overflow-hidden border border-border shadow-xs">
           {fields.map((field, index) => (
             <div
               key={field.label}

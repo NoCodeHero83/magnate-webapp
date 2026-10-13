@@ -32,11 +32,11 @@ const TransferButton = ({
   };
 
   return (
-    <footer className="mt-auto px-4 pb-8 pt-4 bg-background/95 backdrop-blur-sm sticky bottom-16 md:bottom-0 z-10 w-full max-w-md mx-auto border-t border-transparent">
+    <footer className="mt-auto px-4 pb-8 pt-4 bg-background/95 backdrop-blur-xs sticky bottom-16 md:bottom-0 z-10 w-full max-w-md mx-auto border-t border-transparent">
       <button
         onClick={handleClick}
         disabled={disabled || loading}
-        className={`w-full font-bold text-lg h-14 rounded-full shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 group ring-2 ring-transparent focus:ring-accent/50 outline-none ${disabled || loading
+        className={`w-full font-bold text-lg h-14 rounded-full shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 group ring-2 ring-transparent focus:ring-accent/50 outline-hidden ${disabled || loading
             ? "bg-muted text-muted-foreground cursor-not-allowed shadow-none"
             : "bg-accent hover:bg-accent/90 text-accent-foreground shadow-accent/25"
           }`}

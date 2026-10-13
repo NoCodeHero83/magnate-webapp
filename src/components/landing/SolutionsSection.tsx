@@ -41,7 +41,7 @@ const SolutionsSection = () => {
               className="group relative bg-card rounded-2xl overflow-hidden border border-border transition-all duration-300 hover:shadow-elevated h-full flex flex-col"
             >
               {/* Header with gradient */}
-              <div className="bg-gradient-to-br from-primary/5 to-accent/5 p-6 md:p-8 pb-6">
+              <div className="bg-linear-to-br from-primary/5 to-accent/5 p-6 md:p-8 pb-6">
                 {/* Icon + Title row on mobile */}
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">
@@ -51,7 +51,7 @@ const SolutionsSection = () => {
                     {solution.title}
                   </h3>
                 </div>
-                <p className="text-muted-foreground text-sm leading-relaxed min-h-[4.5rem]">
+                <p className="text-muted-foreground text-sm leading-relaxed min-h-18">
                   {solution.description}
                 </p>
               </div>
@@ -61,7 +61,7 @@ const SolutionsSection = () => {
                 <ul className="space-y-3">
                   {solution.features.map((feature) => (
                     <li key={feature} className="flex items-center gap-3 text-sm">
-                      <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0">
+                      <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center shrink-0">
                         <div className="w-2 h-2 rounded-full bg-success" />
                       </div>
                       <span className="text-foreground">{feature}</span>

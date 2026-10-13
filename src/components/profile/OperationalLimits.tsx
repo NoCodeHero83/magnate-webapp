@@ -21,7 +21,7 @@ const OperationalLimits = ({
   };
 
   return (
-    <section className="bg-card border border-border rounded-2xl p-4 mx-4 mt-4 shadow-sm">
+    <section className="bg-card border border-border rounded-2xl p-4 mx-4 mt-4 shadow-xs">
       <div className="flex items-center gap-2 mb-4">
         <div className="p-2 rounded-xl bg-primary/10">
           <TrendingUp className="size-4 text-primary" />
@@ -47,21 +47,21 @@ const OperationalLimits = ({
       {/* Limits Grid */}
       <div className="grid grid-cols-3 gap-2 sm:gap-4">
         <div className="h-full flex flex-col items-center justify-between bg-muted/50 rounded-xl p-3 text-center">
-          <p className="text-xs text-muted-foreground min-h-[2rem] flex items-center">Límite Mensual</p>
+          <p className="text-xs text-muted-foreground min-h-8 flex items-center">Límite Mensual</p>
           <p className="text-sm font-bold text-foreground">
             {formatCurrencyARS(monthlyLimit)}
           </p>
         </div>
         
         <div className="h-full flex flex-col items-center justify-between bg-muted/50 rounded-xl p-3 text-center">
-          <p className="text-xs text-muted-foreground min-h-[2rem] flex items-center">Monto Operado</p>
+          <p className="text-xs text-muted-foreground min-h-8 flex items-center">Monto Operado</p>
           <p className="text-sm font-bold text-primary">
             {formatCurrencyARS(amountOperated)}
           </p>
         </div>
         
         <div className="h-full flex flex-col items-center justify-between bg-muted/50 rounded-xl p-3 text-center">
-          <p className="text-xs text-muted-foreground min-h-[2rem] flex items-center">Disponible</p>
+          <p className="text-xs text-muted-foreground min-h-8 flex items-center">Disponible</p>
           <p className={`text-sm font-bold ${remainingBalance > 0 ? "text-green-600 dark:text-green-400" : "text-destructive"}`}>
             {formatCurrencyARS(remainingBalance)}
           </p>

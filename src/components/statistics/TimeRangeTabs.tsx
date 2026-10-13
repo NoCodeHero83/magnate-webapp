@@ -24,7 +24,7 @@ const TimeRangeTabs = ({ selectedRange, onRangeChange }: TimeRangeTabsProps) => 
           onClick={() => onRangeChange(range.id)}
           className={`flex-1 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
             selectedRange === range.id
-              ? "bg-accent text-accent-foreground shadow-sm"
+              ? "bg-accent text-accent-foreground shadow-xs"
               : "text-muted-foreground hover:text-foreground"
           }`}
         >

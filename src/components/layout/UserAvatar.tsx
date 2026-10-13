@@ -40,7 +40,7 @@ const UserAvatar = ({
       )}
     >
       <div className={cn(
-        "rounded-full bg-gradient-to-br from-primary/30 via-primary/50 to-primary/70 flex items-center justify-center overflow-hidden border-2 border-accent/30 hover:border-accent transition-colors cursor-pointer",
+        "rounded-full bg-linear-to-br from-primary/30 via-primary/50 to-primary/70 flex items-center justify-center overflow-hidden border-2 border-accent/30 hover:border-accent transition-colors cursor-pointer",
         sizeClasses[size]
       )}>
         {imageUrl ? (

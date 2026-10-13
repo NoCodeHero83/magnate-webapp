@@ -158,7 +158,7 @@ const SuccessPay = () => {
           <div className="p-6 space-y-4">
             {/* Recipient */}
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center shrink-0">
                 <Building2 className="h-6 w-6 text-accent" />
               </div>
               <div className="flex-1 min-w-0">
@@ -248,7 +248,7 @@ const SuccessPay = () => {
       {/* Share Menu Modal */}
       {showShareMenu && (
         <div
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-end justify-center z-50 p-4"
+          className="fixed inset-0 bg-background/80 backdrop-blur-xs flex items-end justify-center z-50 p-4"
           onClick={() => setShowShareMenu(false)}
         >
           <div

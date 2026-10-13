@@ -9,7 +9,7 @@ interface FeatureCardProps {
 const FeatureCard = ({ icon: Icon, label, gradientClass }: FeatureCardProps) => {
   return (
     <div
-      className={`${gradientClass} flex flex-col gap-2 rounded-xl justify-center items-center p-3 aspect-square shadow-sm relative overflow-hidden group cursor-default`}
+      className={`${gradientClass} flex flex-col gap-2 rounded-xl justify-center items-center p-3 aspect-square shadow-xs relative overflow-hidden group cursor-default`}
     >
       <div className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-colors" />
       <Icon className="text-white h-8 w-8 relative z-10" strokeWidth={1.5} />

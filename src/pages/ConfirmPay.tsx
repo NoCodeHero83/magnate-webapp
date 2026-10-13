@@ -195,9 +195,9 @@ const ConfirmPay = () => {
           </div>
 
           {/* Recipient Card */}
-          <div className="bg-card rounded-2xl p-6 shadow-sm mb-6 border border-border">
+          <div className="bg-card rounded-2xl p-6 shadow-xs mb-6 border border-border">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-accent to-primary rounded-full flex items-center justify-center">
+              <div className="w-14 h-14 bg-linear-to-br from-accent to-primary rounded-full flex items-center justify-center">
                 <span className="text-accent-foreground font-bold text-lg">
                   {getInitials(transferData?.recipientName || recipient)}
                 </span>

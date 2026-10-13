@@ -29,7 +29,7 @@ const About = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-20 lg:pt-40 lg:pb-28 bg-gradient-to-b from-primary/5 to-background">
+      <section className="pt-32 pb-20 lg:pt-40 lg:pb-28 bg-linear-to-b from-primary/5 to-background">
         <div className="container mx-auto px-4 lg:px-8 text-center max-w-3xl">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight animate-fade-up">
             Transformando las finanzas de Argentina.
@@ -47,7 +47,7 @@ const About = () => {
           <div className="grid md:grid-cols-2 gap-8 lg:gap-16 items-center">
             {/* Visual Block */}
             <div className="order-2 md:order-1 animate-fade-up">
-              <div className="aspect-square max-w-md mx-auto rounded-3xl overflow-hidden bg-gradient-to-br from-primary/5 to-accent/5 shadow-elevated transition-transform hover:scale-[1.02] duration-500">
+              <div className="aspect-square max-w-md mx-auto rounded-3xl overflow-hidden bg-linear-to-br from-primary/5 to-accent/5 shadow-elevated transition-transform hover:scale-[1.02] duration-500">
                 <img 
                   src={aboutMissionImage} 
                   alt="Seguridad, eficacia y emprendedores - Valores de Magnate" 
