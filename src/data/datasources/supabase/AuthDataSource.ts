@@ -70,7 +70,7 @@ export class AuthDataSource {
 
             return {
                 success: true,
-                user: fullUserData as User
+                user: fullUserData as unknown as User
             };
 
         } catch (error: any) {

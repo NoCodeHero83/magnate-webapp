@@ -18,7 +18,7 @@ export class UserDataSource {
             return null;
         }
 
-        return data as User;
+        return data as unknown as User;
     }
 
     /**
@@ -51,6 +51,6 @@ export class UserDataSource {
             throw new Error(`Error updating user: ${error.message}`);
         }
 
-        return updatedUser as User;
+        return updatedUser as unknown as User;
     }
 }

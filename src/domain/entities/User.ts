@@ -10,7 +10,6 @@ export interface User {
     dni: string;
     cuit_cuil: string;
     web_access_enabled: boolean;
-    web_password_hash: string | null;
     web_access_enabled_at: string | null;
     verification_status: VerificationStatus;
     account_type: AccountType;
@@ -36,8 +35,11 @@ export interface BusinessProfile {
     legal_entity?: { name: string } | null;
 }
 
-/** users + perfil de empresa con el nombre del tipo societario */
-export const USER_SELECT = '*, business_profile:business_profiles(*, legal_entity:legal_entity_types(name))';
+/**
+ * users + perfil de empresa con el nombre del tipo societario.
+ * Columnas explícitas: los hashes de PIN y de contraseña web no son legibles desde la API.
+ */
+export const USER_SELECT: string = 'id, first_name, last_name, email, phone, dni, cuit_cuil, web_access_enabled, web_access_enabled_at, verification_status, zapsign_verification_id, zapsign_verified_at, zapsign_data, created_at, updated_at, photo_url, role, zapsign_contract_url, account_type, status_reason, reviewed_by, reviewed_at, pin_upgrade_required, business_profile:business_profiles(*, legal_entity:legal_entity_types(name))';
 
 /** Nombre a mostrar: nombre de fantasía / razón social para empresas, nombre y apellido para personas */
 export function getDisplayName(user: Pick<User, 'first_name' | 'last_name' | 'account_type' | 'business_profile'> | null | undefined, fallback = 'Usuario'): string {
