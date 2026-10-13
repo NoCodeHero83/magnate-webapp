@@ -2,16 +2,6 @@
 import { supabase } from '../../../lib/supabase';
 import { User, USER_SELECT } from '../../../domain/entities/User';
 
-export interface LoginUserData {
-    id: string;
-    email: string;
-    pin_hash: string;
-    verification_status: string;
-    web_access_enabled: boolean;
-    web_password_hash: string | null;
-    auto_password_encrypted: string | null;
-}
-
 export class AuthDataSource {
     /**
      * Login with email and web password
@@ -50,38 +40,11 @@ export class AuthDataSource {
                 return { success: false, error: data?.error || 'Credenciales inválidas' };
             }
 
-            const loginUser = data.user;
-
-            // 2. Check verification status
-            if (loginUser.verification_status === 'suspended') {
-                return { success: false, error: 'Cuenta suspendida' };
-            }
-
-            if (loginUser.verification_status === 'rejected') {
-                return { success: false, error: 'Tu solicitud de cuenta fue rechazada. Contacta a soporte para más información.' };
-            }
-
-            if (loginUser.verification_status === 'pending') {
-                return { success: false, error: 'Tu cuenta está en revisión. Te avisaremos por email cuando sea aprobada.' };
-            }
-
-            if (loginUser.verification_status !== 'verified') {
-                return { success: false, error: 'Cuenta pendiente de verificación' };
-            }
-
-            // 3. Check for auto password (required for Supabase Auth)
-            if (!loginUser.auto_password_encrypted) {
-                return { success: false, error: 'Error de configuración de cuenta (No auth credentials found)' };
-            }
-
-            // 4. Decrypt auto password
-            const { decrypt } = await import('../../../lib/crypto');
-            const autoPassword = await decrypt(loginUser.auto_password_encrypted);
-
-            // 5. Sign in with Supabase Auth using the decrypted password
-            const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
-                email: normalizedEmail,
-                password: autoPassword,
+            // 2. El servidor validó la contraseña y el estado de la cuenta y creó la sesión.
+            //    Ya no se recibe la contraseña de Supabase Auth.
+            const { data: authData, error: signInError } = await supabase.auth.setSession({
+                access_token: data.session?.access_token,
+                refresh_token: data.session?.refresh_token,
             });
 
             if (signInError) {
@@ -102,7 +65,7 @@ export class AuthDataSource {
 
             if (fullUserError || !fullUserData) {
                 console.error('Error fetching user data:', fullUserError);
-                return { success: true, user: loginUser as unknown as User }; // Return what we have if full fetch fails
+                return { success: false, error: 'No se pudieron cargar los datos de tu cuenta' };
             }
 
             return {
