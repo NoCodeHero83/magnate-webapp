@@ -7,7 +7,7 @@
 
 # Configuración de variables de entorno (puedes agregar las tuyas en Netlify UI)
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "22"
 
 # Redireccionamientos para SPA (Single Page Application)
 [[redirects]]
