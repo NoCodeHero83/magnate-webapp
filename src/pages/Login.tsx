@@ -214,6 +214,9 @@ const Login = () => {
                   "Ingresar"
                 )}
               </Button>
+              <p className="text-muted-foreground text-xs text-center">
+                ¿Olvidaste tu contraseña? Crea una nueva desde la app Magnate, en Menú → Acceso Web.
+              </p>
             </div>
 
             <p className="text-muted-foreground text-[10px] mt-8 font-medium">
