@@ -34,12 +34,15 @@ interface SecurityVerificationModalProps {
     isOpen: boolean;
     onClose: () => void;
     otp: OtpState;
+    /** Código enviado, solo en el entorno de pruebas con los códigos en pantalla activados */
+    debugCode?: string;
 }
 
 const SecurityVerificationModal = ({
     isOpen,
     onClose,
     otp,
+    debugCode,
 }: SecurityVerificationModalProps) => {
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -57,6 +60,12 @@ const SecurityVerificationModal = ({
                 </DialogHeader>
 
                 <div className="flex flex-col items-center gap-4 py-6">
+                    {debugCode && (
+                        <div className="w-full rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-foreground text-center">
+                            Entorno de pruebas · tu código es{" "}
+                            <span className="font-bold tracking-widest text-amber-500">{debugCode}</span>
+                        </div>
+                    )}
                     {/* Timer and attempts display */}
                     <div className="flex items-center justify-between w-full px-2">
                         <span

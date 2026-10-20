@@ -26,6 +26,8 @@ const ConfirmPay = () => {
   // Comisión calculada por el servidor
   const [quote, setQuote] = useState<TransferQuote | null>(null);
   const [quoteLoading, setQuoteLoading] = useState(true);
+  // Solo en el entorno de pruebas con los códigos en pantalla activados
+  const [debugCode, setDebugCode] = useState<string | undefined>();
   useEffect(() => {
     if (!account?.id || !transferData) {
       setQuoteLoading(false);
@@ -56,6 +58,7 @@ const ConfirmPay = () => {
       transferData.amount
     );
     if (!result.success) return result.error || "No se pudo enviar el código";
+    setDebugCode(result.debugCode);
   };
 
   /** El servidor valida el código y, si es correcto, hace la transferencia */
@@ -300,6 +303,7 @@ const ConfirmPay = () => {
           isOpen={showSecurityModal}
           onClose={() => setShowSecurityModal(false)}
           otp={otp}
+          debugCode={debugCode}
         />
       </div>
     </AppLayout>

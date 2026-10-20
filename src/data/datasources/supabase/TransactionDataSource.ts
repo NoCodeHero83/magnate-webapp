@@ -343,7 +343,7 @@ export class TransactionDataSource {
         fromAccountId: string,
         toIdentifier: string,
         amount: number
-    ): Promise<{ success: boolean; error?: string }> {
+    ): Promise<{ success: boolean; error?: string; debugCode?: string }> {
         const { data, error } = await supabase.rpc('request_transfer_code', {
             p_from_account_id: fromAccountId,
             p_to_identifier: toIdentifier,
@@ -356,7 +356,8 @@ export class TransactionDataSource {
         }
 
         const result = data as any;
-        if (result?.success) return { success: true };
+        // debug_code solo llega en el entorno de pruebas con los códigos en pantalla activados
+        if (result?.success) return { success: true, debugCode: result.debug_code ?? undefined };
         return { success: false, error: OTP_ERRORS[result?.error] ?? 'No se pudo enviar el código.' };
     }
 }
